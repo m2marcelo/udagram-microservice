@@ -12,7 +12,7 @@ spec:
         service: backend-user
     spec:
       containers:
-      - image: scheele/udacity-restapi-user
+      - image: m2marcelo/udacity-restapi-user
         name: backend-user 
         imagePullPolicy: Always  
         resources:
@@ -30,29 +30,29 @@ spec:
               key: URL 
         - name: JWT_SECRET
           valueFrom:
-            configMapKeyRef:
-              name: env-config
+            secretKeyRef:
+              name: env-secret
               key: JWT_SECRET
-        - name: POSTGRESS_DB
+        - name: POSTGRES_DATABASE
           valueFrom:
             configMapKeyRef:
               name: env-config
-              key: POSTGRESS_DB
-        - name: POSTGRESS_HOST
+              key: POSTGRES_DATABASE
+        - name: POSTGRES_HOST
           valueFrom:
             configMapKeyRef:
               name: env-config
-              key: POSTGRESS_HOST
-        - name: POSTGRESS_PASSWORD
+              key: POSTGRES_HOST
+        - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
               name: env-secret
-              key: POSTGRESS_PASSWORD
-        - name: POSTGRESS_USERNAME
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_USERNAME
           valueFrom:
             secretKeyRef:
               name: env-secret
-              key: POSTGRESS_USERNAME
+              key: POSTGRES_USERNAME
       restartPolicy: Always
 
 
