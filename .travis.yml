@@ -20,7 +20,7 @@ install:
   
 deploy:
   - provider: script
-    script: bash deployment/docker/publish.sh
+    script: bash deployment/docker/push_image.sh
     on:
       branch: master
   - provider: script
