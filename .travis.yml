@@ -17,3 +17,13 @@ before_install:
 
 install:
   - docker-compose -f udacity-c3-deployment/docker/docker-compose-build.yaml build --parallel
+  
+deploy:
+  - provider: script
+    script: bash deployment/docker/publish.sh
+    on:
+      branch: master
+  - provider: script
+    script: bash deployment/k8s/deploy.sh
+    on:
+      branch: master
