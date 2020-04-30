@@ -20,10 +20,10 @@ install:
   
 deploy:
   - provider: script
-    script: bash deployment/docker/push_image.sh
+    script: bash udacity-c3-deployment/docker/push_image.sh
     on:
       branch: master
   - provider: script
-    script: bash deployment/k8s/deploy.sh
+    script: bash udacity-c3-deployment/k8s/deploy.sh
     on:
       branch: master
