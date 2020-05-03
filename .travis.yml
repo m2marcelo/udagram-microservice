@@ -18,13 +18,7 @@ before_install:
 
 install:
   - docker-compose -f udacity-c3-deployment/docker/docker-compose-build.yaml build --parallel
-  
-deploy:
-  - provider: script
-    script: bash udacity-c3-deployment/docker/push_image.sh
-    on:
-      branch: master
-  - provider: script
-    script: bash udacity-c3-deployment/k8s/deploy.sh
-    on:
-      branch: master
+
+script:
+  - udacity-c3-deployment/docker/push_image.sh
+  - udacity-c3-deployment/k8s/deploy.sh
