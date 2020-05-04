@@ -6,13 +6,13 @@ services:
         image: m2marcelo/reverseproxy 
     backend_user:
         build:
-            context: ../../udacity-c3-restapi-user
+            context: ../../restapi-user
         image: m2marcelo/udacity-restapi-user
     backend_feed:
         build:
-            context: ../../udacity-c3-restapi-feed 
+            context: ../../restapi-feed 
         image: m2marcelo/udacity-restapi-feed
     frontend:
         build:
-            context: ../../udacity-c3-frontend 
+            context: ../../frontend 
         image: m2marcelo/udacity-frontend:local
