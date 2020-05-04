@@ -5,7 +5,7 @@
  echo $PWD
  echo $(ls)
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
  
  echo "Passo 0 - criando certificados"
  
@@ -47,4 +47,4 @@ echo "Passo 4"
 kubectl apply -f $DIR/backend-feed-deployment.yaml
 kubectl apply -f $DIR/backend-user-deployment.yaml
 kubectl apply -f $DIR/reverseproxy-deployment.yaml
-kubectl apply -f $DIR/frontend-deployment.yaml 
+kubectl apply -f $DIR/frontend-deployment.yaml
