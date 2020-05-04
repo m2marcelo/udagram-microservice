@@ -30,7 +30,7 @@
  echo "$configmap" | kubectl apply -f -
 
  echo "Passo 2"
- secret=`cat ".$DIR/env-secret.yaml" | sed "s/{{JWT_SECRET}}/$JWT_SECRET/g;s/{{POSTGRES_USERNAME}}/$POSTGRES_USERNAME/g;s/{{POSTGRES_PASSWORD}}/$POSTGRES_PASSWORD/g;s/{{KUBECONFIG_AWS}}/$KUBECONFIG_AWS/g"`
+ secret=`cat "$DIR/env-secret.yaml" | sed "s/{{JWT_SECRET}}/$JWT_SECRET/g;s/{{POSTGRES_USERNAME}}/$POSTGRES_USERNAME/g;s/{{POSTGRES_PASSWORD}}/$POSTGRES_PASSWORD/g;s/{{KUBECONFIG_AWS}}/$KUBECONFIG_AWS/g"`
  echo "$secret" | kubectl apply -f -
 
  echo "Passo 3"

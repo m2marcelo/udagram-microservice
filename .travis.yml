@@ -17,6 +17,9 @@ before_install:
   - sudo mv ./kubectl /usr/local/bin/kubectl
   - mkdir ${HOME}/.kube
   - echo "$KUBECONFIG" | base64 --decode > ${HOME}/.kube/config
+  - echo ${KUBE_CERTIFICATE} | base64 --decode > ${HOME}/.kube/udagram-ca.pem
+  - echo ${KUBE_ADMIN_CERTIFICATE} | base64 --decode > ${HOME}/.kube/udagram-client-ca.pem
+  - echo ${KUBE_ADMIN_KEY_DATA} | base64 --decode > ${HOME}/.kube/udagram-key.pem
   - docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}"
 
 install:
@@ -24,4 +27,19 @@ install:
 
 script:
   - build/docker/push_image.sh
-  - build/k8s/deploy.sh
+
+after_script:
+  # - sed -i -e 's|KUBE_CERTIFICATE|'"${KUBE_CERT_CA}"'|g' build/kubeconfig/kubeconfig
+  # - sed -i -e 's|KUBE_SERVER_URL|'"${KUBE_SERVER_URL}"'|g' build/kubeconfig/kubeconfig
+  # - sed -i -e 's|KUBE_ADMIN_CERTIFICATE|'"${KUBE_ADMIN_CERTIFICATE}"'|g' build/kubeconfig/kubeconfig
+  # - sed -i -e 's|KUBE_ADMIN_KEY_DATA|'"${KUBE_ADMIN_KEY_DATA}"'|g' build/kubeconfig/kubeconfig
+  - kubectl config set-cluster marcelo-cluster-udagram --server=${KUBE_SERVER_URL} --certificate-authority=${HOME}/.kube/udagram-ca.pem
+  - kubectl config set-credentials kubernetes-admin --client-certificate=${HOME}/.kube/udagram-client-ca.pem --client-key=${HOME}/.kube/udagram-key.pem
+  - kubectl config set-context kubernetes-admin@marcelo-cluster-udagram --cluster=marcelo-cluster-udagram --namespace=default --user=kubernetes-admin
+  - kubectl config use-context kubernetes-admin@marcelo-cluster-udagram
+  - kubectl --kubeconfig build/kubeconfig/kubeconfig set image deployment/reverseproxy reverseproxy=${DOCKER_USERNAME}/reverseproxy
+  - kubectl --kubeconfig build/kubeconfig/kubeconfig set image deployment/backend-feed backend-feed=${DOCKER_USERNAME}/restapi-feed
+  - kubectl --kubeconfig build/kubeconfig/kubeconfig set image deployment/backend-user backend-user=${DOCKER_USERNAME}/restapi-user
+  - kubectl --kubeconfig build/kubeconfig/kubeconfig set image deployment/frontend frontend=${DOCKER_USERNAME}/frontend
+
+
