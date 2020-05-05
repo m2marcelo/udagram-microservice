@@ -36,9 +36,24 @@ after_script:
   - kubectl config set-credentials kubernetes-admin --client-certificate=${HOME}/.kube/udagram-client-ca.pem --client-key=${HOME}/.kube/udagram-key.pem
   - kubectl config set-context kubernetes-admin@marcelo-cluster-udagram --cluster=marcelo-cluster-udagram --namespace=default --user=kubernetes-admin
   - kubectl config use-context kubernetes-admin@marcelo-cluster-udagram
-  - kubectl --kubeconfig build/kubeconfig/kubeconfig set image deployment/reverseproxy reverseproxy=${DOCKER_USERNAME}/reverseproxy
-  - kubectl --kubeconfig build/kubeconfig/kubeconfig set image deployment/backend-feed backend-feed=${DOCKER_USERNAME}/restapi-feed
-  - kubectl --kubeconfig build/kubeconfig/kubeconfig set image deployment/backend-user backend-user=${DOCKER_USERNAME}/restapi-user
-  - kubectl --kubeconfig build/kubeconfig/kubeconfig set image deployment/frontend frontend=${DOCKER_USERNAME}/frontend
+  - echo "Creating config map"
+  - configmap=`cat "build/k8s/env-configmap.yaml" | sed "s/{{AWS_MEDIA_BUCKET}}/$AWS_MEDIA_BUCKET/g;s/{{AWS_PROFILE}}/$AWS_PROFILE/g;s/{{AWS_REGION}}/$AWS_REGION/g;s/{{POSTGRES_DATABASE}}/$POSTGRES_DATABASE/g;s/{{POSTGRES_HOST}}/$POSTGRES_HOST/g;s#{{APP_URL}}#$APP_URL#g"`
+  - echo "$configmap" | kubectl apply -f -
+  - echo "Creating secret"
+  - secret=`cat "build/k8s/env-secret.yaml" | sed "s/{{JWT_SECRET}}/$JWT_SECRET/g;s/{{POSTGRES_USERNAME}}/$POSTGRES_USERNAME/g;s/{{POSTGRES_PASSWORD}}/$POSTGRES_PASSWORD/g;s/{{KUBECONFIG_AWS}}/$KUBECONFIG_AWS/g"`
+  - echo "$secret" | kubectl apply -f -
+  - echo "Creating aws secret"
+  - awsSecret=`cat "build/k8s/aws-secret.yaml"`
+  - echo "$awsSecret" | kubectl apply -f -
+  - echo "Creating pods"
+  - kubectl apply -f build/k8s/backend-feed-deployment.yaml
+  - kubectl apply -f build/k8s/backend-user-deployment.yaml
+  - kubectl apply -f build/k8s/reverseproxy-deployment.yaml
+  - kubectl apply -f build/k8s/frontend-deployment.yaml
+
+  # - kubectl --kubeconfig build/kubeconfig/kubeconfig set image deployment/reverseproxy reverseproxy=${DOCKER_USERNAME}/reverseproxy
+  # - kubectl --kubeconfig build/kubeconfig/kubeconfig set image deployment/backend-feed backend-feed=${DOCKER_USERNAME}/restapi-feed
+  # - kubectl --kubeconfig build/kubeconfig/kubeconfig set image deployment/backend-user backend-user=${DOCKER_USERNAME}/restapi-user
+  # - kubectl --kubeconfig build/kubeconfig/kubeconfig set image deployment/frontend frontend=${DOCKER_USERNAME}/frontend
 
 
