@@ -16,7 +16,6 @@ before_install:
   - chmod +x ./kubectl
   - sudo mv ./kubectl /usr/local/bin/kubectl
   - mkdir ${HOME}/.kube
-  - echo "$KUBECONFIG" | base64 --decode > ${HOME}/.kube/config
   - echo ${KUBE_CERTIFICATE} | base64 --decode > ${HOME}/.kube/udagram-ca.pem
   - echo ${KUBE_ADMIN_CERTIFICATE} | base64 --decode > ${HOME}/.kube/udagram-client-ca.pem
   - echo ${KUBE_ADMIN_KEY_DATA} | base64 --decode > ${HOME}/.kube/udagram-key.pem
